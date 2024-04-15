@@ -11,6 +11,12 @@ public class NodeModel implements Node {
     String name;
     NodeType type;
 
+    public NodeModel(String id, String name, NodeType type) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+    }
+
     @Override
     public String getId() {
         return id;
