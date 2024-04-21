@@ -1,0 +1,9 @@
+
+
+export enum Type {
+  GATEWAY = 'GATEWAY',
+  END = 'END',
+  HUMAN_TASK = 'HUMAN_TASK',
+  SERVICE_TASK = 'SERVICE_TASK',
+  START = 'START'
+}
