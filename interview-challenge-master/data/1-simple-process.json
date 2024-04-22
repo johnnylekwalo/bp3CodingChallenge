@@ -3,32 +3,32 @@
     {
       "id": 0,
       "name": "Start",
-      "type": "Start"
+      "type": "START"
     },
     {
       "id": 1,
       "name": "A",
-      "type": "ServiceTask"
+      "type": "SERVICE_TASK"
     },
     {
       "id": 2,
       "name": "B",
-      "type": "HumanTask"
+      "type": "HUMAN_TASK"
     },
     {
       "id": 3,
       "name": "C",
-      "type": "ServiceTask"
+      "type": "SERVICE_TASK"
     },
     {
       "id": 4,
       "name": "D",
-      "type": "HumanTask"
+      "type": "HUMAN_TASK"
     },
     {
       "id": 5,
       "name": "End",
-      "type": "End"
+      "type": "END"
     }
   ],
   "edges": [

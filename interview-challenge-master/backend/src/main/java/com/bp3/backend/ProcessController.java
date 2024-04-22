@@ -9,7 +9,7 @@ public class ProcessController {
     @ResponseBody
     @PostMapping("/reduce")
     public ProcessDiagram reduce(@RequestBody ProcessDiagram process) {
-        process.filterHumanTasks(process);
-        return process;
+        ProcessDiagram processReduced = process.filterHumanTasks(process);
+        return processReduced;
     }
 }
