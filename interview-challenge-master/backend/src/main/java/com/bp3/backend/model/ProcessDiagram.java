@@ -63,10 +63,14 @@ public class ProcessDiagram {
 
 
         ProcessDiagram processDiagram1 = new ProcessDiagram();
-//        ArrayList<EdgeModel> edgeModels1 = graph.getEdges();
-//        ArrayList<NodeModel> nodeModels1 = graph.getNodes();
-//        processDiagram1.setEdges(edgeModels1);
-//        processDiagram1.setNodes(nodeModels1);
+        ArrayList<EdgeModel> edgeModels1 = graph.getEdges();
+        ArrayList<NodeModel> nodeModels1 = new ArrayList<>();
+        for ( GraphNode graphNode:
+                graph.getNodes()) {
+            nodeModels1.add(graphNode.node);
+        }
+        processDiagram1.setEdges(edgeModels1);
+        processDiagram1.setNodes(nodeModels1);
 
         return processDiagram1;
     }

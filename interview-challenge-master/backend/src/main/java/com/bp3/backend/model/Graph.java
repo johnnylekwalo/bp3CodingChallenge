@@ -62,20 +62,18 @@ public class Graph{
     }
 
 
-//    public List<Integer> getNodes() {
-//        return new ArrayList<>(nodeMap.keySet());
-//    }
+    public ArrayList<GraphNode> getNodes() {
+        return new ArrayList<>(nodeMap.values());
+    }
 
-//    public List<List<Integer>> getEdges() {
-//        List<List<Integer>> edgeList = new ArrayList<>();
-//        for (GraphEdge edge : edges) {
-//            List<Integer> e = new ArrayList<>();
-//            e.add(edge.from.id);
-//            e.add(edge.to.id);
-//            edgeList.add(e);
-//        }
-//        return edgeList;
-//    }
+    public ArrayList<EdgeModel> getEdges() {
+        ArrayList<EdgeModel> edgeList = new ArrayList<>();
+        for (GraphEdge edge : edges) {
+            EdgeModel e = new EdgeModel(String.valueOf(edge.from.id),String.valueOf(edge.to.id));
+            edgeList.add(e);
+        }
+        return edgeList;
+    }
 
     public void printGraph() {
         for (GraphNode node : nodeMap.values()) {
