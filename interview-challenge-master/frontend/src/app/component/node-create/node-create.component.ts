@@ -23,21 +23,12 @@ export class NodeCreateComponent {
   name: string = '';
   type: string = '';
 
-  sharedData: any;
   data: any;
-
-  form: FormGroup;
 
   types = Object.values(Type);
 
-
   constructor(private nodeService: NodeService, private sharedService: SharedService , private fb: FormBuilder) {
-    this.sharedService.sharedData$.subscribe(sharedData => this.sharedData = sharedData);
-    this.form = this.fb.group({
-      newNodeId: ['', Validators.required],
-      newNodeType: ['', Validators.required],
 
-    });
   }
 
 
@@ -47,19 +38,15 @@ export class NodeCreateComponent {
       name: this.name,
       type: this.type
     };
-
-    console.log("newEdge",newEdge)
-
     this.nodeService.addNode(newEdge);
+    this.clearFrom();
   }
 
-  updateData() {
-    const newNodeId = this.form.value.newNodeId;
-    const newNodeType = this.form.value.newNodeType;
-    this.data.newNodeId = newNodeId;
-    this.data.newNodeType = newNodeType;
-    // this.listItems.push(newItem);
-    this.form.reset();
-    this.sharedService.setData(this.data);
+  clearFrom(){
+      this.id = 0;
+      this.name = '';
+      this.type = '';
   }
+
+
 }

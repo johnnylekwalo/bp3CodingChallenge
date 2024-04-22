@@ -15,7 +15,11 @@
     <select class="form-control" id="type" name="type" [(ngModel)]="type">
       <option *ngFor="let type of types" [value]="type">{{ type }}</option>
     </select>
+    <div class="form-group">
+      <br>
+        <button type="submit" class="btn btn-primary" [disabled]="!itemForm.valid">Create Node</button>
+    </div>
   </div>
-  <button type="submit" class="btn btn-primary" [disabled]="!itemForm.valid">Create Node</button>
+
 
 </form>

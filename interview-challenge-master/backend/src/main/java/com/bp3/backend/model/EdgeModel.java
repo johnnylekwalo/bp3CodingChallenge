@@ -30,4 +30,12 @@ public class EdgeModel implements Edge {
     public void setTo(String to) {
         this.to = to;
     }
+
+    @Override
+    public String toString() {
+        return "EdgeModel{" +
+                "from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                '}';
+    }
 }

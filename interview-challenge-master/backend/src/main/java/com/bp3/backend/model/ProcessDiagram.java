@@ -1,8 +1,11 @@
 package com.bp3.backend.model;
 
+import com.bp3.backend.NodeType;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.bp3.backend.NodeType.HUMAN_TASK;
 import static com.bp3.backend.NodeType.SERVICE_TASK;
 import static java.lang.Integer.parseInt;
 
@@ -45,60 +48,42 @@ public class ProcessDiagram {
         ArrayList<EdgeModel> edgeModels = processDiagram.getEdges();
 
 
-        List<GraphNode> graphNodes = new ArrayList<>();
-        for(NodeModel node:nodes){
-            GraphNode graphNode = new GraphNode(parseInt(node.getId()), node);
-            graphNodes.add(graphNode);
-        }
-        Graph graph = new Graph(graphNodes);
+//        List<GraphNode> graphNodes = new ArrayList<>();
+//        for(NodeModel node:nodes){
+//            GraphNode graphNode = new GraphNode(parseInt(node.getId()), node);
+//            graphNodes.add(graphNode);
+//        }
+        Graph graph = new Graph();
+        graph.constructGraphNodes(nodes);
+        graph.constructGraph(edgeModels,graph);
 
-        for( EdgeModel edgeModel : edgeModels){
-            String idFrom = edgeModel.getFrom();
-            String idTo = edgeModel.getTo();
-
-            //get The graph nodes
-            GraphNode graphFrom = getGraph(idFrom , graph);
-            GraphNode graphTo = getGraph(idTo, graph);
-
-            // if not in list already add to adjacent
-            List<GraphNode> adjacentNodesFrom = graphFrom.getAdjacentNodes();
-            if(!adjacentNodesFrom.contains(graphTo)){
-                adjacentNodesFrom.add(graphTo);
-            }
-
-            List<GraphNode> adjacentNodesTo = graphTo.getAdjacentNodes();
-            if(!adjacentNodesTo.contains(graphFrom)){
-                adjacentNodesTo.add(graphFrom);
-            }
-
-        }
 
 
         //remove service task
         for(NodeModel nodeModel:processDiagram.nodes){
-            if(nodeModel.type.equals(SERVICE_TASK)){
-                graph.removeNode(Integer.parseInt(nodeModel.id));
+            if(nodeModel.type.equals(NodeType.HUMAN_TASK)){
+                GraphNode graphToBeDeleted = getGraph(nodeModel.id, graph);
+                graph.deleteNode(graphToBeDeleted);
             }
         }
 
-        //Graph back to processDiagram
+        System.out.println("Final Final"+graph.nodes.toString());
+
+       System.out.println("After DELETE "+ graph.nodes.size());
         ProcessDiagram processDiagram1 = new ProcessDiagram();
-        ArrayList<EdgeModel> edgeModels1 = new ArrayList<>();
-        ArrayList<NodeModel> nodeModels1 = new ArrayList<>();
-        for(GraphNode graphNode :graph.getNodes()) {
-            NodeModel nodeModel;
-            nodeModel = graphNode.getNode();
-            for(GraphNode graphNodeAdjacent : graphNode.adjacentNodes) {
-                EdgeModel edgeModel = new EdgeModel(nodeModel.getId(),String.valueOf(graphNodeAdjacent.getId()));
-                edgeModels1.add(edgeModel);
-            }
-            nodeModels1.add(nodeModel);
-        }
+        ArrayList<EdgeModel> edgeModels1 = graph.deconstructEdges();
+        ArrayList<NodeModel> nodeModels1 = graph.deconstructNodes(graph);
         processDiagram1.setEdges(edgeModels1);
         processDiagram1.setNodes(nodeModels1);
 
         return processDiagram1;
     }
 
-
+    @Override
+    public String toString() {
+        return "ProcessDiagram{" +
+                "nodes=" + nodes +
+                ", edges=" + edges +
+                '}';
+    }
 }

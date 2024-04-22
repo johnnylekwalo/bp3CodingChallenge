@@ -1,16 +1,19 @@
 <h2>Create Edge</h2>
 <form #itemForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="form-group">
-    <label for="type">To</label>
-    <select class="form-control" id="type" name="type" [(ngModel)]="to">
-      <option *ngFor="let to of tos" [value]="to.id">{{ to.id }}</option>
+    <label for="type">From</label>
+    <select class="form-control" id="from" name="from" [(ngModel)]="from">
+      <option *ngFor="let from of froms" [value]="from.id">{{ from.id }}  {{ from.name }}</option>
     </select>
   </div>
   <div class="form-group">
-    <label for="type">From</label>
-    <select class="form-control" id="from" name="from" [(ngModel)]="from">
-      <option *ngFor="let from of froms" [value]="from.id">{{ from.id }}</option>
+    <label for="type">To</label>
+    <select class="form-control" id="type" name="type" [(ngModel)]="to">
+      <option *ngFor="let to of tos" [value]="to.id">{{ to.id }}  {{ to.name }}</option>
     </select>
   </div>
-  <button type="submit" class="btn btn-primary" [disabled]="!itemForm.valid">Create Edge</button>
+  <div class="form-group">
+    <br>
+    <button type="submit" class="btn btn-primary" [disabled]="!itemForm.valid">Create Edge</button>
+  </div>
 </form>

@@ -11,6 +11,9 @@ public class NodeModel implements Node {
     String name;
     NodeType type;
 
+    public NodeModel(String id) {
+        this.id = id;
+    }
     public NodeModel(String id, String name, NodeType type) {
         this.id = id;
         this.name = name;
@@ -53,5 +56,12 @@ public class NodeModel implements Node {
         return this.id.equals(node.id);
     }
 
-
+    @Override
+    public String toString() {
+        return "NodeModel{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                '}';
+    }
 }
