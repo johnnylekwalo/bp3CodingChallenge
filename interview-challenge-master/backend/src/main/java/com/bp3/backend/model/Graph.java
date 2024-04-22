@@ -35,8 +35,8 @@ public class Graph{
 
     public void constructGraph(ArrayList<EdgeModel> edges, Graph graph) {
         for (EdgeModel edge : edges) {
-            GraphNode fromNode = nodes.get(getGraph(edge.from, graph).id);
-            GraphNode toNode = nodes.get(getGraph(edge.from, graph).id);
+            GraphNode fromNode = getGraph(edge.from, graph);
+            GraphNode toNode = getGraph(edge.to, graph);
             fromNode.to.add(toNode);
             toNode.from.add(fromNode);
         }
@@ -50,6 +50,7 @@ public class Graph{
 
 
     public void deleteNode(GraphNode node) {
+        System.out.println("deleteNode:" + node.getNode().name);
         nodes.remove(node);
 
         // Remove connections to the deleted node for all other nodes
@@ -61,6 +62,9 @@ public class Graph{
     }
 
     public void connectAdjacentNodes(GraphNode node) {
+        System.out.println("connectAdjacentNodes :" +node.id);
+        System.out.println("connectAdjacentNodes node.to.size():" +node.to.size());
+        System.out.println("connectAdjacentNodes node.from.size():" +node.from.size());
         for (GraphNode adjNode : node.from) {
             for (GraphNode toNode : adjNode.to) {
                 if (!node.to.contains(toNode) && toNode != node) {
@@ -90,8 +94,14 @@ public class Graph{
     public ArrayList<EdgeModel> deconstructEdges() {
         ArrayList<EdgeModel> edges = new ArrayList<>();
         for (GraphNode node : nodes) {
+            System.out.println("node.id :"+ node.node.id);
             for (GraphNode toNode : node.to) {
-                edges.add(new EdgeModel(String.valueOf(node.id),String.valueOf(toNode.id)));
+                System.out.println("node.to :"+ toNode.node.id);
+                edges.add(new EdgeModel(String.valueOf(node.node.id),String.valueOf(toNode.node.id)));
+            }
+            for (GraphNode fromNode : node.from) {
+                System.out.println("node.from :"+ fromNode.node.id);
+//                edges.add(new EdgeModel(String.valueOf(node.id),String.valueOf(toNode.id)));
             }
         }
         return edges;

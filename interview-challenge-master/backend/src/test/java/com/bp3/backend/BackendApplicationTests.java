@@ -38,6 +38,9 @@ class BackendApplicationTests {
 
 
         ProcessDiagram processDiagram1 = processDiagram.filterHumanTasks(processDiagram);
+
+        System.out.println("processDiagram1.toString() :"+ processDiagram1.toString());
+
     }
 
     @Test
@@ -72,6 +75,7 @@ class BackendApplicationTests {
 
 
         ProcessDiagram processDiagram1 = processDiagram.filterHumanTasks(processDiagram);
+        System.out.println("processDiagram1 :"+ processDiagram1.toString());
     }
 
 }

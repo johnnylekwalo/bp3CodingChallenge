@@ -48,21 +48,21 @@ public class ProcessDiagram {
         ArrayList<EdgeModel> edgeModels = processDiagram.getEdges();
 
 
-//        List<GraphNode> graphNodes = new ArrayList<>();
-//        for(NodeModel node:nodes){
-//            GraphNode graphNode = new GraphNode(parseInt(node.getId()), node);
-//            graphNodes.add(graphNode);
-//        }
+
         Graph graph = new Graph();
         graph.constructGraphNodes(nodes);
         graph.constructGraph(edgeModels,graph);
 
+        System.out.println("graph.nodes.size() :" + graph.nodes.size());
 
 
         //remove service task
         for(NodeModel nodeModel:processDiagram.nodes){
             if(nodeModel.type.equals(NodeType.HUMAN_TASK)){
                 GraphNode graphToBeDeleted = getGraph(nodeModel.id, graph);
+                System.out.println("graphToBeDeleted.from.size() :" + graphToBeDeleted.from.size());
+                System.out.println("graphToBeDeleted.to.size() :" + graphToBeDeleted.to.size());
+
                 graph.deleteNode(graphToBeDeleted);
             }
         }
