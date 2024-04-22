@@ -1,128 +1,106 @@
 package com.bp3.backend.model;
 
+import com.bp3.backend.Node;
 import jakarta.servlet.ServletOutputStream;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
 public class Graph{
-    List<GraphNode> nodes;
+    Map<Integer, GraphNode> nodeMap;
+    List<GraphEdge> edges;
 
-    public Graph(List<GraphNode> nodes) {
-
-        this.nodes = nodes;
-    }
-
-    public List<GraphNode> getNodes() {
-        return nodes;
-    }
-
-    public void setNodes(List<GraphNode> nodes) {
-        this.nodes = nodes;
-    }
-
-    public void constructGraphNodes(ArrayList<NodeModel> nodeList) {
-        // Create nodes
-        for (NodeModel nodeModel : nodeList) {
-            nodes.add(new GraphNode(parseInt(nodeModel.getId()),nodeModel));
-        }
-
-        // Create edges
-
-    }
-
-    public void constructGraph(ArrayList<EdgeModel> edges, Graph graph) {
-        for (EdgeModel edge : edges) {
-            GraphNode fromNode = getGraph(edge.from, graph);
-            GraphNode toNode = getGraph(edge.to, graph);
-            fromNode.to.add(toNode);
-            toNode.from.add(fromNode);
-        }
-    }
     public Graph() {
-        this.nodes = new ArrayList<>();
+        nodeMap = new HashMap<>();
+        edges = new ArrayList<>();
     }
 
-
-
-
-
-    public void deleteNode(GraphNode node) {
-        System.out.println("deleteNode:" + node.getNode().name);
-        nodes.remove(node);
-
-        // Remove connections to the deleted node for all other nodes
-        for (GraphNode n : nodes) {
-            n.from.remove(node);
-            n.to.remove(node);
-            connectAdjacentNodes(n);
+    public void addNode(int nodeId , NodeModel nodeModel) {
+        if (!nodeMap.containsKey(nodeId)) {
+            nodeMap.put(nodeId, new GraphNode(nodeId, nodeModel));
         }
     }
 
-    public void connectAdjacentNodes(GraphNode node) {
-        System.out.println("connectAdjacentNodes :" +node.id);
-        System.out.println("connectAdjacentNodes node.to.size():" +node.to.size());
-        System.out.println("connectAdjacentNodes node.from.size():" +node.from.size());
-        for (GraphNode adjNode : node.from) {
-            for (GraphNode toNode : adjNode.to) {
-                if (!node.to.contains(toNode) && toNode != node) {
-                    node.to.add(toNode);
-                    connectAdjacentNodes(toNode);
+    public void addEdge(int fromId, int toId) {
+        GraphNode from = nodeMap.get(fromId);
+        GraphNode to = nodeMap.get(toId);
+        if (from != null && to != null) {
+            GraphEdge edge = new GraphEdge(from, to);
+            from.outgoingEdges.add(edge);
+            to.incomingEdges.add(edge);
+            edges.add(edge);
+        }
+    }
+
+    public void deleteNode(int nodeId) {
+        GraphNode node = nodeMap.get(nodeId);
+        if (node != null) {
+            // Reconnect incoming and outgoing nodes
+            for (GraphEdge incomingEdge : new ArrayList<>(node.incomingEdges)) {
+                for (GraphEdge outgoingEdge : new ArrayList<>(node.outgoingEdges)) {
+                    GraphNode fromNode = incomingEdge.from;
+                    GraphNode toNode = outgoingEdge.to;
+                    GraphEdge newEdge = new GraphEdge(fromNode, toNode);
+                    fromNode.outgoingEdges.add(newEdge);
+                    toNode.incomingEdges.add(newEdge);
+                    edges.add(newEdge);
                 }
             }
-        }
 
-        for (GraphNode adjNode : node.to) {
-            for (GraphNode fromNode : adjNode.from) {
-                if (!node.from.contains(fromNode) && fromNode != node) {
-                    node.from.add(fromNode);
-                    connectAdjacentNodes(fromNode);
-                }
+            // Remove the node and its associated edges
+            for (GraphEdge incomingEdge : node.incomingEdges) {
+                incomingEdge.from.outgoingEdges.remove(incomingEdge);
+                edges.remove(incomingEdge);
             }
+            for (GraphEdge outgoingEdge : node.outgoingEdges) {
+                outgoingEdge.to.incomingEdges.remove(outgoingEdge);
+                edges.remove(outgoingEdge);
+            }
+            nodeMap.remove(nodeId);
         }
     }
-    public ArrayList<NodeModel> deconstructNodes(Graph graph) {
-        ArrayList<NodeModel> nodeList = new ArrayList<>();
-        for (GraphNode node : nodes) {
-            nodeList.add(node.getNode());
+
+
+//    public List<Integer> getNodes() {
+//        return new ArrayList<>(nodeMap.keySet());
+//    }
+
+//    public List<List<Integer>> getEdges() {
+//        List<List<Integer>> edgeList = new ArrayList<>();
+//        for (GraphEdge edge : edges) {
+//            List<Integer> e = new ArrayList<>();
+//            e.add(edge.from.id);
+//            e.add(edge.to.id);
+//            edgeList.add(e);
+//        }
+//        return edgeList;
+//    }
+
+    public void printGraph() {
+        for (GraphNode node : nodeMap.values()) {
+            System.out.print("Node " + node.id + ": ");
+            for (GraphEdge edge : node.outgoingEdges) {
+                System.out.print("(" + edge.from.id + "->" + edge.to.id + ") ");
+            }
+            System.out.println();
         }
-        return nodeList;
     }
 
-    public ArrayList<EdgeModel> deconstructEdges() {
-        ArrayList<EdgeModel> edges = new ArrayList<>();
-        for (GraphNode node : nodes) {
-            System.out.println("node.id :"+ node.node.id);
-            for (GraphNode toNode : node.to) {
-                System.out.println("node.to :"+ toNode.node.id);
-                edges.add(new EdgeModel(String.valueOf(node.node.id),String.valueOf(toNode.node.id)));
+    private void removeNode(int nodeId) {
+        GraphNode node = nodeMap.get(nodeId);
+        if (node != null) {
+            for (GraphEdge edge : node.outgoingEdges) {
+                GraphNode nextNode = edge.to;
+                nextNode.incomingEdges.removeIf(e -> e.from == node);
+                edges.remove(edge);
             }
-            for (GraphNode fromNode : node.from) {
-                System.out.println("node.from :"+ fromNode.node.id);
-//                edges.add(new EdgeModel(String.valueOf(node.id),String.valueOf(toNode.id)));
+            for (GraphEdge edge : node.incomingEdges) {
+                GraphNode prevNode = edge.from;
+                prevNode.outgoingEdges.removeIf(e -> e.to == node);
+                edges.remove(edge);
             }
+            nodeMap.remove(nodeId);
         }
-        return edges;
-    }
-
-    public GraphNode getGraph(String id , Graph graph){
-        GraphNode graphNodeById = null;
-        for(GraphNode graphNode: graph.getNodes()){
-            int idFromInt = Integer.parseInt(id);
-            if(idFromInt==graphNode.getId()){
-                graphNodeById = graphNode;
-                return graphNodeById;
-            }
-        }
-        return graphNodeById;
-    }
-
-    @Override
-    public String toString() {
-        return "Graph{" +
-                "nodes=" + nodes +
-                '}';
     }
 }

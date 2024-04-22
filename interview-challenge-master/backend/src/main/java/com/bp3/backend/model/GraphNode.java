@@ -8,8 +8,8 @@ public class GraphNode {
     int id;
 
     NodeModel node;
-    List<GraphNode> from;
-    List<GraphNode> to;
+    List<GraphEdge> outgoingEdges;
+    List<GraphEdge> incomingEdges;
 
 
 
@@ -17,40 +17,8 @@ public class GraphNode {
     public GraphNode(int id, NodeModel node) {
         this.id = id;
         this.node = node;
-        this.from = new ArrayList<>();
-        this.to = new ArrayList<>();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public NodeModel getNode() {
-        return node;
-    }
-
-    public void setNode(NodeModel node) {
-        this.node = node;
-    }
-
-    public List<GraphNode> getFrom() {
-        return from;
-    }
-
-    public void setFrom(List<GraphNode> from) {
-        this.from = from;
-    }
-
-    public List<GraphNode> getTo() {
-        return to;
-    }
-
-    public void setTo(List<GraphNode> to) {
-        this.to = to;
+        this.outgoingEdges = new ArrayList<>();
+        this.incomingEdges = new ArrayList<>();
     }
 
     @Override
@@ -65,6 +33,4 @@ public class GraphNode {
     public int hashCode() {
         return Objects.hash(id);
     }
-
-
 }

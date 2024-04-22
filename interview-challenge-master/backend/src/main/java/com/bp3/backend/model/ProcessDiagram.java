@@ -3,6 +3,7 @@ package com.bp3.backend.model;
 import com.bp3.backend.NodeType;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.bp3.backend.NodeType.HUMAN_TASK;
@@ -29,17 +30,7 @@ public class ProcessDiagram {
         this.edges = edges;
     }
 
-    public GraphNode getGraph(String id , Graph graph){
-        GraphNode graphNodeById = null;
-        for(GraphNode graphNode: graph.getNodes()){
-            int idFromInt = Integer.parseInt(id);
-            if(idFromInt==graphNode.getId()){
-                graphNodeById = graphNode;
-                return graphNodeById;
-            }
-        }
-        return graphNodeById;
-    }
+
     public ProcessDiagram filterHumanTasks(ProcessDiagram processDiagram){
 
 
@@ -49,34 +40,51 @@ public class ProcessDiagram {
 
 
 
-        Graph graph = new Graph();
-        graph.constructGraphNodes(nodes);
-        graph.constructGraph(edgeModels,graph);
+//        Graph graph = new Graph();
+        Graph graph = constructGraph(nodes, edgeModels);
 
-        System.out.println("graph.nodes.size() :" + graph.nodes.size());
+        // Print the graph
+        System.out.println("Constructed Graph:");
+        graph.printGraph();
+
 
 
         //remove service task
         for(NodeModel nodeModel:processDiagram.nodes){
             if(nodeModel.type.equals(NodeType.HUMAN_TASK)){
-                GraphNode graphToBeDeleted = getGraph(nodeModel.id, graph);
-                System.out.println("graphToBeDeleted.from.size() :" + graphToBeDeleted.from.size());
-                System.out.println("graphToBeDeleted.to.size() :" + graphToBeDeleted.to.size());
+                // Remove node 2 and its adjacent edges recursively
+                graph.deleteNode(Integer.parseInt(nodeModel.id));
 
-                graph.deleteNode(graphToBeDeleted);
             }
         }
 
-        System.out.println("Final Final"+graph.nodes.toString());
+        System.out.println("After Graph:");
+        graph.printGraph();
 
-       System.out.println("After DELETE "+ graph.nodes.size());
+
         ProcessDiagram processDiagram1 = new ProcessDiagram();
-        ArrayList<EdgeModel> edgeModels1 = graph.deconstructEdges();
-        ArrayList<NodeModel> nodeModels1 = graph.deconstructNodes(graph);
-        processDiagram1.setEdges(edgeModels1);
-        processDiagram1.setNodes(nodeModels1);
+//        ArrayList<EdgeModel> edgeModels1 = graph.getEdges();
+//        ArrayList<NodeModel> nodeModels1 = graph.getNodes();
+//        processDiagram1.setEdges(edgeModels1);
+//        processDiagram1.setNodes(nodeModels1);
 
         return processDiagram1;
+    }
+
+    private static Graph constructGraph(List<NodeModel> nodes, ArrayList<EdgeModel> edges) {
+        Graph graph = new Graph();
+
+        // Adding nodes
+        for (NodeModel node : nodes) {
+            graph.addNode(Integer.parseInt(node.id),node);
+        }
+
+        // Adding edges
+        for (EdgeModel edge : edges) {
+            graph.addEdge(Integer.parseInt(edge.from), Integer.parseInt(edge.to));
+        }
+
+        return graph;
     }
 
     @Override
